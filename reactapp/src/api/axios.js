@@ -1,6 +1,9 @@
 import axios from "axios";
 
-export const API_BASE_URL = "http://127.0.0.1:8000";
+// Use ?? not || so an empty REACT_APP_API_BASE_URL means same-origin (production).
+export const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL ??
+  (process.env.NODE_ENV === "production" ? "" : "http://127.0.0.1:8000");
 export const RECORDS_API = "/api/records";
 export const API_STATIC_MEDIA = "http://192.168.56.101:1337/";
 export const TOKEN_KEY = "auth_token";

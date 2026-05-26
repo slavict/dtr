@@ -17,6 +17,7 @@ frontend, orchestrated with Docker.
 - [Frontend (React)](#frontend-react)
 - [API reference](#api-reference)
 - [Testing](#testing)
+- [Production](#production)
 - [Scripts and useful commands](#scripts-and-useful-commands)
 - [Further documentation](#further-documentation)
 
@@ -250,11 +251,25 @@ image).
 
 ---
 
+## Production
+
+Development uses `docker-compose.yml` (Django `runserver`, React dev server on port 3000). For production (Gunicorn, built React, Nginx on port **8888**):
+
+1. Copy and edit env: `cp .env.production.example .env` (set `DEBUG=0`, strong `SECRET_KEY`, real `ALLOWED_HOSTS`).
+2. Build and start: `docker compose -f docker-compose.prod.yml up -d --build`
+3. Collect static: `docker compose -f docker-compose.prod.yml exec django python manage.py collectstatic --noinput`
+
+Full steps, architecture, HTTPS notes, and troubleshooting: **[docs/PRODUCTION.md](docs/PRODUCTION.md)**.
+
+---
+
 ## Scripts and useful commands
 
 | Task               | Command                                                                     |
 |--------------------|-----------------------------------------------------------------------------|
-| Start all services | `docker-compose up -d`                                                      |
+| Start (development)| `docker-compose up -d`                                                      |
+| Start (production) | `docker compose -f docker-compose.prod.yml up -d --build`                   |
+| Stop (production)  | `docker compose -f docker-compose.prod.yml down`                            |
 | Stop all           | `docker-compose down`                                                       |
 | View logs          | `docker-compose logs -f [django\|node\|postgres\|nginx]`                    |
 | Django shell       | `docker-compose exec django python manage.py shell`                         |
@@ -268,6 +283,7 @@ image).
 
 ## Further documentation
 
+- **[docs/PRODUCTION.md](docs/PRODUCTION.md)** – Running the production Docker stack.
 - **[docs/API.md](docs/API.md)** – API reference (auth, records, errors).
 - **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** – High-level architecture and data flow.
 - **[TESTING.md](TESTING.md)** – Running backend and frontend tests (including Docker).

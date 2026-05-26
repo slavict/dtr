@@ -1,0 +1,64 @@
+# Production stack: Gunicorn + PostgreSQL + Nginx (API + React static).
+# Usage: see docs/PRODUCTION.md
+
+services:
+  django:
+    build: ./django/django_project/
+    container_name: djangoapp_prod
+    restart: always
+    expose:
+      - 8000
+    command: >
+      gunicorn django_project.wsgi:application
+      --bind 0.0.0.0:8000
+      --workers 3
+      --timeout 60
+    depends_on:
+      - postgres
+    volumes:
+      - django_static_volume:/usr/src/app/static
+      - django_media_volume:/usr/src/app/media
+    networks:
+      - myNetwork
+    env_file:
+      - ./.env
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgresdb_prod
+    restart: always
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-admin}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-django_db}
+    networks:
+      - myNetwork
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile.prod
+      args:
+        REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL:-}
+    container_name: nginx_dtr_prod
+    restart: always
+    ports:
+      - "8888:80"
+    depends_on:
+      - django
+    volumes:
+      - django_static_volume:/home/src/app/static
+      - django_media_volume:/home/src/app/media
+    networks:
+      - myNetwork
+
+volumes:
+  postgres_volume:
+  django_static_volume:
+  django_media_volume:
+
+networks:
+  myNetwork:
+    driver: bridge

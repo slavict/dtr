@@ -21,7 +21,7 @@
                      └─────────────┘
 ```
 
-- **Production-style**: Browser → Nginx → Django → PostgreSQL.
+- **Production**: Browser → Nginx (:80) → React static + API proxy → Gunicorn/Django → PostgreSQL. See [PRODUCTION.md](PRODUCTION.md).
 - **Development**: React dev server (3000) talks to Django (8000) directly; CORS is enabled on the backend.
 
 ## Backend (Django)
