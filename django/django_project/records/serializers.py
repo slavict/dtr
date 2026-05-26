@@ -3,6 +3,13 @@ from .models import Record
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import AnonymousUser
 from .models import User
+from .login_lockout import (
+    LOGIN_FAILED_MESSAGE,
+    LOGIN_LOCKED_MESSAGE,
+    clear_login_lockout,
+    is_login_locked,
+    record_failed_login,
+)
 
 
 class RecordSerializer(serializers.ModelSerializer):
@@ -77,33 +84,35 @@ class LoginSerializer(serializers.Serializer):
                 'A password is required to log in.'
             )
 
+        try:
+            account = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            account = None
+
+        if account is not None and is_login_locked(account):
+            raise serializers.ValidationError(LOGIN_LOCKED_MESSAGE)
+
         # Django's authenticate method checks that the provided email and
         # password match a user in our database. We pass email as username
         # because USERNAME_FIELD = email on the User model.
-        user = authenticate(username=email, password=password)
+        auth_username = account.email if account is not None else email
+        user = authenticate(username=auth_username, password=password)
 
-        # If no user matches the email/password, authenticate returns None.
-        # Raise an exception in that case.
-        if user is None:
-            raise serializers.ValidationError(
-                'A user with this email and password was not found.'
-            )
+        if user is not None and user.is_active:
+            clear_login_lockout(user)
+            return {
+                'email': user.email,
+                'username': user.username,
+                'token': user.token
+            }
 
-        # Django provides an is_active flag on the User model to indicate
-        # whether the user has been deactivated or blocked. Check it and raise
-        # an exception if the user is inactive.
-        if not user.is_active:
-            raise serializers.ValidationError(
-                'This user has been deactivated.'
-            )
+        if account is not None and account.is_active:
+            record_failed_login(account)
+            account.refresh_from_db()
+            if is_login_locked(account):
+                raise serializers.ValidationError(LOGIN_LOCKED_MESSAGE)
 
-        # validate must return a dict of validated data. This data is passed to
-        # create and update methods, among others.
-        return {
-            'email': user.email,
-            'username': user.username,
-            'token': user.token
-        }
+        raise serializers.ValidationError(LOGIN_FAILED_MESSAGE)
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializes and deserializes User objects."""

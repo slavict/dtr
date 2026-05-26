@@ -2,11 +2,12 @@
 Unit tests for records app. Run in Docker:
   docker-compose run --rm django python manage.py test records
 """
-from django.test import TestCase
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase, APIClient
+from django.test import TestCase
 from rest_framework import status
-from .models import Record
+from rest_framework.test import APIClient, APITestCase
+
+from records.models import Record
 
 User = get_user_model()
 
@@ -38,7 +39,7 @@ class RecordSerializerTests(TestCase):
         )
 
     def test_create_sets_owner_and_technician_name(self):
-        from .serializers import RecordSerializer
+        from records.serializers import RecordSerializer
         from rest_framework.request import Request
         from rest_framework.test import APIRequestFactory, force_authenticate
 
@@ -60,7 +61,7 @@ class RecordSerializerTests(TestCase):
         self.assertEqual(record.technician_name, self.user.username)
 
     def test_technician_name_is_read_only(self):
-        from .serializers import RecordSerializer
+        from records.serializers import RecordSerializer
 
         serializer = RecordSerializer(
             data={

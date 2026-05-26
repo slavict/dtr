@@ -14,6 +14,11 @@ import axiosInstance from "../../api/axios";
 import { formatApiErrors } from "../../api/formatApiErrors";
 import { useAuth } from "../../context/AuthContext";
 
+const LOGIN_FAILED_MESSAGE =
+  "Login failed. Please check your email and password.";
+const LOGIN_LOCKED_MESSAGE =
+  "Too many failed login attempts. Your account is temporarily locked for 3 minutes. Please try again later.";
+
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email is required").trim(),
   password: Yup.string().required("Password is required"),
@@ -33,12 +38,11 @@ export default function Login() {
       login(token, { email, username });
       navigate("/", { replace: true });
     } catch (err) {
-      setStatus(
-        formatApiErrors(
-          err.response?.data,
-          "Login failed. Please check your email and password."
-        )
-      );
+      const message = formatApiErrors(err.response?.data, LOGIN_FAILED_MESSAGE);
+      setStatus({
+        text: message,
+        locked: message === LOGIN_LOCKED_MESSAGE,
+      });
     }
   };
 
@@ -69,8 +73,8 @@ export default function Login() {
             <Form>
               <Stack spacing={2}>
                 {status && (
-                  <Alert severity="error" onClose={() => {}}>
-                    {status}
+                  <Alert severity={status.locked ? "warning" : "error"}>
+                    {status.text}
                   </Alert>
                 )}
                 <Field name="email">
