@@ -1,9 +1,11 @@
-Репозиторий к статье на хабре
-https://habr.com/ru/post/713490/
-Написание простого web приложения на react с бэкендом на Django, с БД на postgres, rabbit, nginx и всё завернуто в docker.
+Repository reference: https://habr.com/ru/post/713490/
+React + Django + Postgres + RabbitMQ + Nginx in Docker.
 
-Запуск проекта:
-1) git clone https://github.com/eldalex/ProjectStudent
-   перейти в ProjectStudent
+Full documentation: see README.md
+
+Quick start:
+1) Clone repo, cd into project root
 2) chmod +x django/django_project/entrypoint.sh
-3) docker-compose up -d
+3) Create .env (see README.md "Environment variables")
+4) docker-compose up -d
+5) docker-compose exec django python manage.py migrate
