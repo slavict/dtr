@@ -96,22 +96,22 @@ class RecordListAPIView(APIView):
 @permission_classes([IsAuthenticated])
 def records_detail(request, pk):
     try:
-        student = Record.objects.get(pk=pk, owner=request.user)
+        record = Record.objects.get(pk=pk, owner=request.user)
     except Record.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'PUT':
-        if student.work_order_finished:
+        if record.work_order_finished:
             return Response(
                 {'detail': 'Cannot edit a record whose work order is finished.'},
                 status=status.HTTP_403_FORBIDDEN
             )
-        serializer = RecordSerializer(student, data=request.data, context={'request': request}, partial=True)
+        serializer = RecordSerializer(record, data=request.data, context={'request': request}, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        student.delete()
+        record.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

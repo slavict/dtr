@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { setAuthToken } from "../api/axios";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { setAuthToken, TOKEN_KEY } from "../api/axios";
 
-const TOKEN_KEY = "auth_token";
 const USER_KEY = "auth_user";
 
 const AuthContext = createContext(null);
@@ -27,16 +26,17 @@ export function AuthProvider({ children }) {
       localStorage.setItem(USER_KEY, JSON.stringify(userData));
       setUser(userData);
     }
+    setAuthToken(newToken);
     setTokenState(newToken);
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     setTokenState(null);
     setUser(null);
     setAuthToken(null);
-  };
+  }, []);
 
   const value = { token, user, login, logout, isAuthenticated: !!token };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

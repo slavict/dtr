@@ -1,19 +1,32 @@
 import { Container, Grid } from "@mui/material";
 import ListRecords from "../appListRecords/ListRecords";
 import axiosInstance, { RECORDS_API } from "../../api/axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ModalRecords from "../appModalRecord/ModalRecord";
+import { useAuth } from "../../context/AuthContext";
 
 const Home = () => {
   const [records, setRecords] = useState([]);
+  const { token, logout } = useAuth();
+
+  const getRecords = useCallback(() => {
+    if (!token) {
+      return;
+    }
+
+    axiosInstance
+      .get(RECORDS_API + "/")
+      .then((res) => setRecords(res.data))
+      .catch((err) => {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          logout();
+        }
+      });
+  }, [token, logout]);
 
   useEffect(() => {
     getRecords();
-  }, []);
-
-  const getRecords = () => {
-    axiosInstance.get(RECORDS_API + "/").then((res) => setRecords(res.data));
-  };
+  }, [getRecords]);
 
   const resetState = () => {
     getRecords();

@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
+import { formatApiErrors } from "../../api/formatApiErrors";
 import { useAuth } from "../../context/AuthContext";
 
 const validationSchema = Yup.object({
@@ -47,12 +48,7 @@ export default function Register() {
       login(token, { email, username });
       navigate("/", { replace: true });
     } catch (err) {
-      const errors = err.response?.data?.user || err.response?.data || {};
-      const message =
-        typeof errors === "string"
-          ? errors
-          : Object.values(errors).flat().join(" ") || "Registration failed.";
-      setStatus(message);
+      setStatus(formatApiErrors(err.response?.data, "Registration failed."));
     }
   };
 

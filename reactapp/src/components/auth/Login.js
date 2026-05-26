@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../api/axios";
+import { formatApiErrors } from "../../api/formatApiErrors";
 import { useAuth } from "../../context/AuthContext";
 
 const validationSchema = Yup.object({
@@ -32,12 +33,12 @@ export default function Login() {
       login(token, { email, username });
       navigate("/", { replace: true });
     } catch (err) {
-      const message =
-        err.response?.data?.errors?.invalid_credentials?.[0] ||
-        err.response?.data?.user?.non_field_errors?.[0] ||
-        err.response?.data?.detail ||
-        "Login failed. Please check your email and password.";
-      setStatus(message);
+      setStatus(
+        formatApiErrors(
+          err.response?.data,
+          "Login failed. Please check your email and password."
+        )
+      );
     }
   };
 

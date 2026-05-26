@@ -1,6 +1,8 @@
 # Dental Tech Register (DTR)
 
-Web application for managing work-order records. Technicians can register, log in, and maintain their own records (description, work started/finished dates, completion status). Built with a Django REST backend and a React (MUI) frontend, orchestrated with Docker.
+Web application for managing work-order records. Technicians can register, log in, and maintain their own records (
+description, work started/finished dates, completion status). Built with a Django REST backend and a React (MUI)
+frontend, orchestrated with Docker.
 
 ---
 
@@ -22,11 +24,11 @@ Web application for managing work-order records. Technicians can register, log i
 
 ## Tech stack
 
-| Layer        | Technology |
-|-------------|------------|
-| Backend     | Django 4.x, Django REST Framework, JWT auth (custom + SimpleJWT), PostgreSQL |
-| Frontend    | React 18, Material UI (MUI), React Router, Formik, Yup, Axios |
-| Infrastructure | Docker, Docker Compose, Nginx |
+| Layer          | Technology                                                                   |
+|----------------|------------------------------------------------------------------------------|
+| Backend        | Django 4.x, Django REST Framework, JWT auth (custom + SimpleJWT), PostgreSQL |
+| Frontend       | React 18, Material UI (MUI), React Router, Formik, Yup, Axios                |
+| Infrastructure | Docker, Docker Compose, Nginx                                                |
 
 ---
 
@@ -109,8 +111,8 @@ ProjectDTR/
    ```
 
 6. **Open the app**
-   - Frontend (dev): **http://localhost:3000**
-   - Backend API: **http://localhost:8000** (or via Nginx on port 8000, depending on setup)
+    - Frontend (dev): **http://localhost:3000**
+    - Backend API: **http://localhost:8000** (or via Nginx on port 8000, depending on setup)
 
 ---
 
@@ -118,16 +120,16 @@ ProjectDTR/
 
 Used by the **Django** service (and optionally by the frontend for API URL). Create a `.env` file in the project root.
 
-| Variable | Description | Example |
-|----------|-------------|--------|
-| `SECRET_KEY` | Django secret key | (long random string) |
-| `DEBUG` | Django debug mode (0/1) | `1` |
-| `POSTGRES_ENGINE` | DB engine | `django.db.backends.postgresql` |
-| `POSTGRES_DB` | Database name | `django_db` |
-| `POSTGRES_USER` | DB user | `admin` |
-| `POSTGRES_PASSWORD` | DB password | `strong_password` |
-| `POSTGRES_HOST` | DB host (use service name in Docker) | `postgres` |
-| `POSTGRES_PORT` | DB port | `5432` |
+| Variable            | Description                          | Example                         |
+|---------------------|--------------------------------------|---------------------------------|
+| `SECRET_KEY`        | Django secret key                    | (long random string)            |
+| `DEBUG`             | Django debug mode (0/1)              | `1`                             |
+| `POSTGRES_ENGINE`   | DB engine                            | `django.db.backends.postgresql` |
+| `POSTGRES_DB`       | Database name                        | `django_db`                     |
+| `POSTGRES_USER`     | DB user                              | `admin`                         |
+| `POSTGRES_PASSWORD` | DB password                          | `strong_password`               |
+| `POSTGRES_HOST`     | DB host (use service name in Docker) | `postgres`                      |
+| `POSTGRES_PORT`     | DB port                              | `5432`                          |
 
 ---
 
@@ -136,9 +138,10 @@ Used by the **Django** service (and optionally by the frontend for API URL). Cre
 ### Models
 
 - **User** (custom auth): `email`, `username`, `password`; JWT via `user.token`.
-- **Record**: `owner` (FK to User), `technician_name` (set from logged-in user), `work_order_finished`, `description`, `work_started_at`, `work_finished_at`.
+- **Record**: `owner` (FK to User), `technician_name` (set from logged-in user), `work_order_finished`, `description`,
+  `work_started_at`, `work_finished_at`.
 
-### Main behaviour
+### Main behavior
 
 - Records are **per user**: list/create/update/delete are scoped by `request.user`.
 - **Technician name** is read-only and set from the authenticated user on create/update.
@@ -164,19 +167,21 @@ python manage.py runserver
 
 - **Auth**: Login and Register pages; JWT stored in `localStorage` and sent as `Authorization: Token <token>`.
 - **Protected routes**: Home (record list) requires authentication; otherwise redirect to `/login`.
-- **Records**: List, add, edit (only if not finished), delete; technician name is read-only and comes from the logged-in user.
+- **Records**: List, add, edit (only if not finished), delete; technician name is read-only and comes from the logged-in
+  user.
 
 ### Routing
 
-| Path | Description |
-|------|-------------|
-| `/login` | Login form |
-| `/register` | Registration form |
-| `/` | Protected: record list + “Add record” |
+| Path        | Description                           |
+|-------------|---------------------------------------|
+| `/login`    | Login form                            |
+| `/register` | Registration form                     |
+| `/`         | Protected: record list + “Add record” |
 
 ### Config (API URL)
 
-- API base URL and records endpoint are in `reactapp/src/api/axios.js` (`API_BASE_URL`, `RECORDS_API`). Adjust for your backend (e.g. when using Nginx or another host/port).
+- API base URL and records endpoint are in `reactapp/src/api/axios.js` (`API_BASE_URL`, `RECORDS_API`). Adjust for your
+  backend (e.g. when using Nginx or another host/port).
 
 ### Running React locally (no Docker)
 
@@ -240,23 +245,24 @@ Base URL: `http://127.0.0.1:8000` (or your backend URL).
 - **Backend**: `docker-compose run --rm django python manage.py test records`
 - **Frontend**: `docker-compose run --rm node npm test -- --watchAll=false`
 
-See **[TESTING.md](TESTING.md)** for details and troubleshooting (e.g. `react-router-dom` in Docker, rebuilding the Node image).
+See **[TESTING.md](TESTING.md)** for details and troubleshooting (e.g. `react-router-dom` in Docker, rebuilding the Node
+image).
 
 ---
 
 ## Scripts and useful commands
 
-| Task | Command |
-|------|--------|
-| Start all services | `docker-compose up -d` |
-| Stop all | `docker-compose down` |
-| View logs | `docker-compose logs -f [django|node|postgres|nginx]` |
-| Django shell | `docker-compose exec django python manage.py shell` |
-| Create superuser | `docker-compose exec django python manage.py createsuperuser` |
-| Migrations | `docker-compose exec django python manage.py makemigrations` then `migrate` |
-| Backend tests | `docker-compose run --rm django python manage.py test records` |
-| Frontend tests | `docker-compose run --rm node npm test -- --watchAll=false` |
-| Rebuild images | `docker-compose build` |
+| Task               | Command                                                                     |
+|--------------------|-----------------------------------------------------------------------------|
+| Start all services | `docker-compose up -d`                                                      |
+| Stop all           | `docker-compose down`                                                       |
+| View logs          | `docker-compose logs -f [django\|node\|postgres\|nginx]`                    |
+| Django shell       | `docker-compose exec django python manage.py shell`                         |
+| Create superuser   | `docker-compose exec django python manage.py createsuperuser`               |
+| Migrations         | `docker-compose exec django python manage.py makemigrations` then `migrate` |
+| Backend tests      | `docker-compose run --rm django python manage.py test records`              |
+| Frontend tests     | `docker-compose run --rm node npm test -- --watchAll=false`                 |
+| Rebuild images     | `docker-compose build`                                                      |
 
 ---
 
@@ -270,4 +276,5 @@ See **[TESTING.md](TESTING.md)** for details and troubleshooting (e.g. `react-ro
 
 ## License and references
 
-- Original idea/reference: [Habr article](https://habr.com/ru/post/713490/) (React + Django + Postgres + Nginx in Docker).
+- Original idea/reference: [Habr article](https://habr.com/ru/post/713490/) (React + Django + Postgres + Nginx in
+  Docker).
