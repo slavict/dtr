@@ -3,16 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/app/App';
 import reportWebVitals from './reportWebVitals';
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { AuthProvider } from './context/AuthContext';
 
-// export const API_URL = "http://127.0.0.1:8000/api/students/"
-export const API_URL = "http://192.168.56.101:1337/api/students/"
-export const API_STATIC_MEDIA = "http://192.168.56.101:1337/"
+const theme = createTheme();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <App/>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <AuthProvider>
+                <App/>
+            </AuthProvider>
+        </ThemeProvider>
     </React.StrictMode>
 );
 

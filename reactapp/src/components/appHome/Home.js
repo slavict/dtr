@@ -1,44 +1,46 @@
-import {Container, Row, Col} from "reactstrap";
-import ListStudents from "../appListStudents/ListStudents";
-import axios from "axios";
-import {useEffect, useState} from "react";
-import ModalStudent from "../appModalStudent/ModalStudent";
-
-import {API_URL} from "../../index";
-
+import { Container, Grid } from "@mui/material";
+import ListRecords from "../appListRecords/ListRecords";
+import axiosInstance, { RECORDS_API } from "../../api/axios";
+import { useEffect, useState } from "react";
+import ModalRecords from "../appModalRecord/ModalRecord";
 
 const Home = () => {
-    const [students, setStudents] = useState([])
+  const [records, setRecords] = useState([]);
 
-    useEffect(()=>{
-        getStudents()
-    },[])
+  useEffect(() => {
+    getRecords();
+  }, []);
 
-    const getStudents = (data)=>{
-        axios.get(API_URL).then(data => setStudents(data.data))
-    }
+  const getRecords = () => {
+    axiosInstance.get(RECORDS_API + "/").then((res) => setRecords(res.data));
+  };
 
-    const resetState = () => {
-        getStudents();
-    };
+  const resetState = () => {
+    getRecords();
+  };
 
-    return (
-        <Container style={{marginTop: "20px"}}>
-            <Row>
-                <Col>
-                    <ListStudents students={students} resetState={resetState} newStudent={false}/>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <ModalStudent
-                    create={true}
-                    resetState={resetState}
-                    newStudent={true}/>
-                </Col>
-            </Row>
-        </Container>
-    )
-}
+  return (
+    <Container sx={{ marginTop: "20px" }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <ListRecords
+            records={records}
+            resetState={resetState}
+            newStudent={false}
+          />
+        </Grid>
+      </Grid>
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid item xs={12}>
+          <ModalRecords
+            create={true}
+            resetState={resetState}
+            newRecord={true}
+          />
+        </Grid>
+      </Grid>
+    </Container>
+  );
+};
 
 export default Home;
