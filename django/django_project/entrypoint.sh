@@ -2,18 +2,18 @@
 
 if [ "$DATABASE" = "postgres" ]
 then
-    # если база еще не запущена
-    echo "Рано..."
+    # Wait until the database is ready
+    echo "Waiting for PostgreSQL..."
 
-    # Проверяем доступность хоста и порта
+    # Check host and port availability
     while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
       sleep 0.1
     done
 
-    echo "Пора!"
+    echo "PostgreSQL is ready."
 fi
 
-# Выполняем миграции
+# Run migrations
 python manage.py migrate
 
 exec "$@"

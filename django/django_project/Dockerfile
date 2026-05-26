@@ -1,31 +1,30 @@
-# Стартовый образ, возмем 3.11 python на базе alpine, он поменше.
+# Base image: Python 3.11 on Alpine (smaller footprint)
 FROM python:3.11-alpine
 
-# рабочая директория
+# Working directory
 WORKDIR /usr/src/app
-# Каталоги для статики
+# Directories for static and media files
 RUN mkdir -p $WORKDIR/static
 RUN mkdir -p $WORKDIR/media
 
-# переменные окружения для python
-#не создавать файлы кэша .pyc
+# Python environment variables
+# Do not write .pyc cache files
 ENV PYTHONDONTWRITEBYTECODE 1
-# не помещать в буфер потоки stdout и stderr
+# Do not buffer stdout and stderr
 ENV PYTHONUNBUFFERED 1
 
 RUN apk update \
     && apk add postgresql-dev gcc python3-dev musl-dev
 
-# обновим pip
+# Upgrade pip
 RUN pip install --upgrade pip
 
-# скопируем и установим зависимости. эта операция закешируется 
-# и будет перезапускаться только при изменении requirements.txt
+# Copy and install dependencies. This layer is cached and only re-runs when
+# requirements.txt changes.
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-# копируем всё что осталось.
+# Copy the rest of the application
 COPY . .
 
-# Сделаем первую миграцию.
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

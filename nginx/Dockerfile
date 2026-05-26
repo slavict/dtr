@@ -1,6 +1,6 @@
-# Собираемся из готового образа nginx:1.23-alpine
+# Build from the official nginx:1.23-alpine image
 FROM nginx:1.23-alpine
-# Удаляем дефолтный конфиг
+# Remove the default config
 RUN rm /etc/nginx/conf.d/default.conf
-# Подкидываем наш
+# Copy our config
 COPY ./nginx.conf /etc/nginx/conf.d/

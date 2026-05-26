@@ -1,14 +1,14 @@
-# так же берём готовый контейнер с node на основе alpine
+# Use the official Node Alpine image
 FROM node:18-alpine as build
-# Задаем рабочий каталог
+# Set the working directory
 WORKDIR /usr/src/app
-# Копируем туда наши json файлы
+# Copy package manifest files
 ADD *.json ./
-# Устанавливаем все пакеты и зависимости указанные в json
+# Install packages and dependencies from package.json
 RUN npm install
 
-# Копируем каталоги public и src. 
-# можно воспользоваться командой COPY . . но если вы синхронизировали node_modules, то будете ждать пока залётся 
-# этот каталог целиком. да и потом могут возникнуть проблемы.
+# Copy the public and src directories.
+# You could use COPY . ., but if node_modules is synced locally, the whole
+# directory would be copied and that can cause problems.
 ADD ./public ./public
 ADD ./src ./src
