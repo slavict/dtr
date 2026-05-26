@@ -1,9 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { AuthProvider } from "../../context/AuthContext";
-import RecordForm from "./RecordForm";
+import { AuthProvider } from "../../../context/AuthContext";
+import RecordForm from "../../../components/appRecordForm/RecordForm";
 
-jest.mock("../../api/axios", () => ({
+jest.mock("../../../api/axios", () => ({
   __esModule: true,
   default: {
     post: jest.fn(() => Promise.resolve()),
@@ -11,6 +11,7 @@ jest.mock("../../api/axios", () => ({
   },
   RECORDS_API: "/api/records",
   setAuthToken: jest.fn(),
+  TOKEN_KEY: "auth_token",
 }));
 
 const theme = createTheme();

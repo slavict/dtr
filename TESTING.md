@@ -21,6 +21,17 @@ docker-compose run --rm django python manage.py test records -v 2
 
 Uses Jest and React Testing Library. No backend or browser required.
 
+Tests live under `reactapp/src/tests/` (separate from app code; mirrors component layout). Shared mocks: `src/tests/utils/reactRouterMock.js`.
+
+| Area | Test file |
+|------|-----------|
+| API errors | `src/tests/api/formatApiErrors.test.js` |
+| Login / Register | `src/tests/components/auth/Login.test.js`, `Register.test.js` |
+| Auth routing | `src/tests/components/auth/ProtectedRoute.test.js` |
+| Auth context | `src/tests/context/AuthContext.test.js` |
+| Records UI | `src/tests/components/appRecordForm/RecordForm.test.js`, `ListRecords.test.js` |
+| App shell | `src/tests/components/app/App.test.js` |
+
 **Ensure dependencies are installed** (e.g. `react-router-dom` and others in `package.json`):
 
 ```bash

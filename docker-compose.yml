@@ -25,6 +25,7 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - ./reactapp/package.json:/usr/src/app/package.json
       - ./reactapp/public/:/usr/src/app/public/
       - ./reactapp/src/:/usr/src/app/src/
     command: npm start

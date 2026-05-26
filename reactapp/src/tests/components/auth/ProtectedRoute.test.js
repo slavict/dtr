@@ -1,28 +1,17 @@
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "../../context/AuthContext";
-import ProtectedRoute from "./ProtectedRoute";
+import { AuthProvider } from "../../../context/AuthContext";
+import ProtectedRoute from "../../../components/auth/ProtectedRoute";
 
 function TestHome() {
   return <div>Protected Home</div>;
 }
 
-function renderWithRouter(initialEntries = ["/"]) {
+function renderProtectedRoute() {
   return render(
     <AuthProvider>
-      <MemoryRouter initialEntries={initialEntries}>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <TestHome />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/login" element={<div>Login Page</div>} />
-        </Routes>
-      </MemoryRouter>
+      <ProtectedRoute>
+        <TestHome />
+      </ProtectedRoute>
     </AuthProvider>
   );
 }
@@ -33,7 +22,7 @@ describe("ProtectedRoute", () => {
   });
 
   test("when not authenticated, redirects to login", () => {
-    renderWithRouter(["/"]);
+    renderProtectedRoute();
     expect(screen.getByText("Login Page")).toBeInTheDocument();
     expect(screen.queryByText("Protected Home")).not.toBeInTheDocument();
   });
@@ -44,7 +33,7 @@ describe("ProtectedRoute", () => {
       "auth_user",
       JSON.stringify({ email: "u@t.com", username: "u1" })
     );
-    renderWithRouter(["/"]);
+    renderProtectedRoute();
     expect(screen.getByText("Protected Home")).toBeInTheDocument();
   });
 });

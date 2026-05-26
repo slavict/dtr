@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import ListRecords from "./ListRecords";
+import ListRecords from "../../../components/appListRecords/ListRecords";
 
 const theme = createTheme();
 

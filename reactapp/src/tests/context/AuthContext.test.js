@@ -1,5 +1,5 @@
 import { render, screen, act } from "@testing-library/react";
-import { AuthProvider, useAuth } from "./AuthContext";
+import { AuthProvider, useAuth } from "../../context/AuthContext";
 
 function TestConsumer() {
   const { token, user, login, logout, isAuthenticated } = useAuth();
