@@ -2,3 +2,4 @@
 /reactapp/node_modules/
 /django/env/
 .idea
+/reactapp/build/
